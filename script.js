@@ -8,8 +8,10 @@ const progress = document.getElementById("progress");
 const progressContainer = document.getElementById("progress-container");
 const title = document.getElementById("title");
 const cover = document.getElementById("cover");
+const currTime = document.querySelector("#currTime");
+const durTime = document.querySelector("#durTime");
 
-const songs = ["Mr. Brightside", "Run For Cover", "Somebody Told Me"];
+const songs = ["Mr. Brightside", "The Sharpest Lives", "Somebody Told Me"];
 
 let songIndex = 1;
 
@@ -25,9 +27,49 @@ function playSong() {
   musicContainer.classList.add("play");
   playBtn.querySelector("i.fas").classList.remove("fa-play");
   playBtn.querySelector("i.fas").classList.add("fa-pause");
+
+  audio.play();
 }
 
-function pauseSong() {}
+function pauseSong() {
+  musicContainer.classList.remove("play");
+  playBtn.querySelector("i.fas").classList.add("fa-play");
+  playBtn.querySelector("i.fas").classList.remove("fa-pause");
+
+  audio.pause();
+}
+function prevSong() {
+  songIndex--;
+  if (songIndex < 0) {
+    songIndex = songs.length - 1;
+  }
+
+  loadSong(songs[songIndex]);
+  playSong();
+}
+
+function nextSong() {
+  songIndex++;
+  if (songIndex > songs.length - 1) {
+    songIndex = 0;
+  }
+
+  loadSong(songs[songIndex]);
+  playSong();
+}
+
+function updateProgress(e) {
+  const { duration, currentTime } = e.srcElement;
+  const progressPercent = (currentTime / duration) * 100;
+  progress.style.width = `${progressPercent}%`;
+}
+
+function setProgress(e) {
+  const width = this.clientWidth;
+  const clickX = e.offsetX;
+  const duration = audio.duration;
+  audio.currentTime = (clickX / width) * duration;
+}
 
 playBtn.addEventListener("click", () => {
   const isPlaying = musicContainer.classList.contains("play");
@@ -38,3 +80,12 @@ playBtn.addEventListener("click", () => {
     playSong();
   }
 });
+
+prevBtn.addEventListener("click", prevSong);
+nextBtn.addEventListener("click", nextSong);
+
+audio.addEventListener("timeupdate", updateProgress);
+
+progressContainer.addEventListener("click", setProgress);
+
+audio.addEventListener("ended", nextSong);

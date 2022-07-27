@@ -38,8 +38,8 @@ body {
 .img-container::after {
   content: "";
   background-color: white;
-  height: 20px;
-  width: 20px;
+  height: 26px;
+  width: 26px;
   position: absolute;
   left: 50%;
   bottom: 50%;
